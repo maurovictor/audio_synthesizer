@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys; import time
-from nota import *; from Note import *; from functools import partial
+from Note import *; from functools import partial
 from PyQt4.QtCore import *; from PyQt4 import QtGui
 
 class Window(QtGui.QMainWindow):
