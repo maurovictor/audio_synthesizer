@@ -1,31 +1,51 @@
 # -*- coding: utf-8 -*-
-import sys, time
-import numpy as np; import sounddevice as sd
-from PyQt4.QtCore import *; from PyQt4 import QtGui
+import sys
+import numpy as np
+import sounddevice as sd
+from PyQt4.QtCore import *
+
+import matplotlib.pyplot as plt
+
+
+
 
 
 class Note(QObject):
 
     played = pyqtSignal(float)
 
-    def __init__(self, frequency):
+    def __init__(self, frequency, attack_samples, decay_samples, max_value, sustain_value=0):
         QObject.__init__(self)
-        self.frequency = frequency
-        self.sample_freq = 48000
-        self.sample_period = 1./self.sample_freq
+
+        self.fs = 50000
+        self.Ts = 1.0 / self.fs
+
+        self.w = 2 * np.pi * frequency
+        self.samples_per_chunk = int(round((3 * (1.0 / frequency)) / (self.Ts)))
+        self.n = np.arange(0, self.samples_per_chunk + 1)
+        self.t = self.Ts * self.n
+        self.signal = np.sin(self.w * self.t)
+
+
+        self.inclination = (sustain_value - max_value) / decay_samples
+        self.vertical_shift = max_value - (self.inclination * attack_samples)
+        self.decay_samples = np.arange(0, decay_samples + 1)
+        self.decay_t = self.decay_samples * self.Ts
+        self.decay_envelope = (self.inclination * self.decay_samples + self.vertical_shift) * self.Ts
+
+        self.decay_signal = np.sin(self.w * self.decay_t) * self.decay_envelope
+
+        sd.play(self.decay_signal, self.fs)
 
 
     def play(self):
-        #Amostras por bloco, tempo 3 períodos dividido por período de amostragem
-        self.samples_per_chunk = int(round((3*(1./self.frequency))/(self.sample_period)))
-        self.n = np.arange(0, self.samples_per_chunk)
-        self.w = 2*np.pi*self.frequency
 
-        self.t = self.n*self.sample_period
+        # max_point = [attack_samples, max_value]
+        # sustain_point = [attack_samples + decay_samples, sustain_value]
 
-        self.sinal = np.sin(self.w*self.t)
-
-        sd.play(self.sinal, self.sample_freq, loop=True)
+        # sd.play(decay)
+        # sd.play(sustain) #with loop=True
+        return
 
     def stop(self):
         sd.stop()
