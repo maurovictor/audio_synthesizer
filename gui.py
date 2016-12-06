@@ -46,8 +46,9 @@ class Window(QtGui.QMainWindow):
             self.white_btns[-1].setStyleSheet("background-color: white")
             self.white_btns[-1].resize(self.key_width, self.key_heigh)
             self.white_btns[-1].move(100 + (self.key_width * i), 100)
-            self.white_btns[-1].pressed.connect(partial(on_press, float(self.natural_frequencies[i])))
-            self.white_btns[-1].released.connect(on_release)
+            self.white_btns[-1].clicked.connect(partial(on_press, float(self.natural_frequencies[i])))
+            #self.white_btns[-1].pressed.connect(partial(on_press, float(self.natural_frequencies[i])))
+            #self.white_btns[-1].released.connect(on_release)
 
         for i in xrange(0, len(self.black_frequencies)):
             self.black_btns.append(QtGui.QPushButton("", self))
@@ -66,7 +67,7 @@ class Window(QtGui.QMainWindow):
 
 @pyqtSlot(float)
 def on_press(freq):
-    note = Note(freq, 100,50000, 500)
+    note = Note(freq, 1, .5)
     #note.play()
 
 
