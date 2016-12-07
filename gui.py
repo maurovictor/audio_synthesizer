@@ -52,6 +52,7 @@ class Window(QtGui.QMainWindow):
 
         for i in xrange(0, len(self.black_frequencies)):
             self.black_btns.append(QtGui.QPushButton("", self))
+            self.black_btns[-1].setShortcut(self.black_shortcuts[i])
             self.black_btns[-1].setStyleSheet("background-color: black")
             self.black_btns[-1].resize(self.black_width, self.black_heigh)
             if i <= 1:
@@ -67,8 +68,9 @@ class Window(QtGui.QMainWindow):
 
 @pyqtSlot(float)
 def on_press(freq):
-    note = Note(freq, 1, .001, .05, 1)
-    #note.play()
+    note = Note(freq, 1, .001, .5, .7)
+    note.play()
+
 
 
 @pyqtSlot()
