@@ -59,7 +59,7 @@ class Window(QtGui.QMainWindow):
             else:
                 self.black_btns[-1].move(210 + (60 * i), 100)
 
-            self.black_btns[-1].pressed.connect(partial(on_press, float(self.black_frequencies[i])))
+            self.black_btns[-1].clicked.connect(partial(on_press, float(self.black_frequencies[i])))
             self.black_btns[-1].released.connect(on_release)
 
         self.show()
@@ -67,7 +67,7 @@ class Window(QtGui.QMainWindow):
 
 @pyqtSlot(float)
 def on_press(freq):
-    note = Note(freq, 1, .5)
+    note = Note(freq, 1, .001, .05, 1)
     #note.play()
 
 

@@ -16,41 +16,62 @@ class Note(QObject):
 
     played = pyqtSignal(float)
 
-    def __init__(self, frequency, max_value, active_time):
+    def __init__(self, frequency, max_value, attack_time, decay_time, release_time):
         QObject.__init__(self)
 
-        self.fs = 5000
-        self.Ts = 1.0 / self.fs
-        self.w = 2 * np.pi * frequency
+        self.fs = 5000 # Frequência de amostragem
+        self.Ts = 1.0 / self.fs # Período de amostragem
+        self.w = 2 * np.pi * frequency # Frequência Angular
 
-        self.samples = np.arange(0, (active_time + 1.5) * self.fs)
-        self.t = (self.samples * self.Ts)
+        self.samples = np.arange(0, (attack_time + decay_time + release_time) * self.fs)
 
-        self.declination = (0.3 - max_value) / active_time
-        self.decay_envelope = (self.t * self.declination) + max_value
-        self.decay_rec = rec(self.samples, 0, active_time * self.fs)
-        self.release_rec = rec(self.samples, active_time * self.fs, len(self.samples))
+        self.t = self.samples * self.Ts
 
+        self.attack_rec = rec(self.samples, 0, attack_time * self.fs)
+        self.decay_rec = rec(self.samples, attack_time * self.fs, (attack_time + decay_time) * self.fs)
+        self.release_rec = rec(self.samples, (attack_time + decay_time) * self.fs, (attack_time + decay_time + release_time) * self.fs)
+
+        self.att_inclination = max_value / attack_time
+        self.att_shift = 0
+        self.dec_inclination = (0.2 - max_value) / decay_time
+        self.dec_shift = max_value - (attack_time * self.dec_inclination)
+        self.rel_inclination = (0 - 0.2) / release_time
+        self.rel_shift = 0.2 - ((attack_time + decay_time) * self.rel_inclination)
+
+        self.attack_envelope = (self.t * self.att_inclination) + self.att_shift
+        self.decay_envelope = (self.t * self.dec_inclination) + self.dec_shift
+        self.release_envelope = (self.t * self.rel_inclination) + self.rel_shift
+
+        self.attack_signal = np.sin(self.w * self.t) * self.attack_envelope * self.attack_rec
         self.decay_signal = np.sin(self.w * self.t) * self.decay_envelope * self.decay_rec
+        self.release_signal = np.sin(self.w * self.t) * self.release_envelope * self.release_rec
+
+        self.signal = self.attack_signal + self.decay_signal + self.release_signal
+
+        #plt.stem(self.samples)
+        #plt.stem(self.attack_rec)
+        #plt.figure()
+        #plt.stem(self.decay_rec)
+        #plt.figure()
+        #plt.stem(self.release_rec)
+        #plt.show()
 
 
 
 
-        self.release_samples = np.arange(0, 1.5 * self.fs )
-        self.release_t = self.samples * self.Ts
-        self.rel_declination = (0 - 0.3) / 1.5
-        self.release_envelope = (self.release_t * self.rel_declination) + 0.4
-        self.release_rec = rec(self.samples, active_time * self.fs, len(self.samples))
-        self.release_signal = np.sin(self.w * self.release_t) * self.release_envelope * self.release_rec
 
-        self.signal = self.decay_signal + self.release_signal
+        sd.stop()
+        sd.play(self.signal, self.fs)
+        #plt.stem(self.attack_signal)
+        #plt.figure()
+        #plt.stem(self.decay_signal)
+        #plt.figure()
+        #plt.stem(self.release_signal)
 
-        #sd.stop()
-        #sd.play(self.signal, self.fs)
-        # plt.stem(self.samples, self.decay_signal)
+
         # plt.figure()
-        plt.stem(self.samples, self.signal)
-        plt.show()
+        #plt.stem(self.decay_envelope)
+        #plt.show()
 
 
 
