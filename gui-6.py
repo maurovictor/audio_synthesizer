@@ -6,6 +6,7 @@ from PyQt4.QtCore import *
 from PyQt4 import QtGui
 from Note import *
 
+
 class Window(QtGui.QMainWindow):
 
     def __init__(self):
@@ -24,8 +25,8 @@ class Window(QtGui.QMainWindow):
         self.blackFreq = [277.18, 311.13, 369.99, 415.3, 466.16]
 
 
-        self.whiteShortcuts = ['d','f', 'g','h','j','k','l']
-        self.blackShortcuts = ['r','t', 'u','i','o']
+        self.whiteShortcuts = ['a', 's', 'd', 'f', 'g', 'h', 'j']
+        self.blackShortcuts = ['w','e','t','y','u']
 
 
         self.bntsWhite = []
@@ -44,7 +45,7 @@ class Window(QtGui.QMainWindow):
             key[index].setStyleSheet("background-color: white")
             key[index].resize(self.whiteWidth, self.whiteHeigh)
             key[index].move(100 + (self.whiteWidth*index),100)
-            key[index].clicked.connect(partial(on_press,
+            key[index].clicked.connect(partial(self.FrequenceNoteW,
                                                float(self.whiteFreq[index])))
 
         #Criando e configurando os botões pretos
@@ -54,7 +55,7 @@ class Window(QtGui.QMainWindow):
             key[index].setShortcut(self.blackShortcuts[index])
             key[index].setStyleSheet("background-color: black; color: black")
             key[index].resize(self.blackWidth,self.blackHeigh)
-            key[index].clicked.connect(partial(on_press,
+            key[index].clicked.connect(partial(self.FrequenceNoteB,
                                                float(self.blackFreq[index])))
             if index<=1:
                 key[-1].move(150+(60*index), 100)
@@ -89,19 +90,26 @@ class Window(QtGui.QMainWindow):
             self.FreqNote[index] = self.whiteFreq[index]
 
         if sender.text() == 'Do':
-            self.play(float(self.FreqNote[0]))
+            note = Note(self.FreqNote[0], 1, .001, .5, .7, 1)
+            note.play()
         if sender.text() == 'Re':
-            self.play(float(self.FreqNote[1]))
+            note = Note(float(self.FreqNote[1]), 1, .001, .5, .7, 1)
+            note.play()
         if sender.text() == 'Mi':
-            self.play(float(self.FreqNote[2]))
+            note = Note(float(self.FreqNote[2]), 1, .001, .5, .7, 1)
+            note.play()
         if sender.text() == 'Fa':
-            self.play(float(self.FreqNote[3]))
+            note = Note(float(self.FreqNote[3]), 1, .001, .5, .7, 1)
+            note.play()
         if sender.text() == 'Sol':
-            self.play(float(self.FreqNote[4]))
+            note = Note(float(self.FreqNote[4]), 1, .001, .5, .7, 1)
+            note.play()
         if sender.text() == 'La':
-            self.play(float(self.FreqNote[5]))
+            note = Note(float(self.FreqNote[5]), 1, .001, .5, .7, 1)
+            note.play()
         if sender.text() == 'Si':
-            self.play(float(self.FreqNote[6]))
+            note = Note(float(self.FreqNote[6]), 1, .001, .5, .7, 1)
+            note.play()
 
 
     def FrequenceNoteB(self, FreqNote):
@@ -115,15 +123,20 @@ class Window(QtGui.QMainWindow):
             self.FreqNote[index] = self.blackFreq[index]
 
         if sender.text() == 'DoS':
-            self.play(float(self.FreqNote[0]))
+            note = Note(self.FreqNote[0], 1, .001, .5, .7, 1)
+            note.play()
         if sender.text() == 'ReS':
-            self.play(float(self.FreqNote[1]))
+            note = Note(self.FreqNote[1], 1, .001, .5, .7, 1)
+            note.play()
         if sender.text() == 'FaS':
-            self.play(float(self.FreqNote[2]))
+            note = Note(self.FreqNote[2], 1, .001, .5, .7, 1)
+            note.play()
         if sender.text() == 'SolS':
-            self.play(float(self.FreqNote[3]))
+            note = Note(self.FreqNote[3], 1, .001, .5, .7, 1)
+            note.play()
         if sender.text() == 'LaS':
-            self.play(float(self.FreqNote[4]))
+            note = Note(self.FreqNote[4], 1, .001, .5, .7, 1)
+            note.play()
 
 
 
@@ -182,9 +195,14 @@ class Window(QtGui.QMainWindow):
                 self.newFreqB[index] = (self.newFreqB[index])*2
                 self.blackFreq[index] = round(self.newFreqB[index],2)
 
-@pyqtSlot(float)
-def on_press(freq):
-    note = Note(freq, 1, .001, .5, .7)
+
+
+@pyqtSlot(list)
+def on_press(parameters):
+
+    freq = float(parameters[0])
+    octave = float(parameters[1])
+    note = Note(freq, 1, .001, .5, .7, octave)
     note.play()
 
 
@@ -192,16 +210,6 @@ def on_press(freq):
 @pyqtSlot()
 def on_release():
     sd.stop()
-
-
-def run():
-    app = QtGui.QApplication(sys.argv)
-    GUI = Window()
-    sys.exit(app.exec_())
-
-run()
-
-
 
 
 def run():

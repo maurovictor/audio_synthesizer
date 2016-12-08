@@ -16,12 +16,14 @@ class Note(QObject):
 
     played = pyqtSignal(float)
 
-    def __init__(self, frequency, max_value, attack_time, decay_time, release_time):
+    def __init__(self, frequency, max_value, attack_time, decay_time, release_time, oitava):
         QObject.__init__(self)
 
         # Definição dos parâmetros de Amostragem
         self.fs = 5000 # Frequência de amostragem
         self.Ts = 1.0 / self.fs # Período de amostragem
+
+
 
         # Definição da Frequência Angular
         self.w = 2 * np.pi * frequency
@@ -43,11 +45,11 @@ class Note(QObject):
         self.att_inclination = max_value / attack_time #Inclinação do ATAQUE
         self.att_shift = 0 # Coeficiente Linear(Deslocamento da reta)
 
-        self.dec_inclination = (0.1 - max_value) / decay_time #Inclinação do DECAY
+        self.dec_inclination = (0.2 - max_value) / decay_time #Inclinação do DECAY
         self.dec_shift = max_value - (attack_time * self.dec_inclination)
 
-        self.rel_inclination = (0 - 0.1) / release_time #Inclinação do RELEASE
-        self.rel_shift = 0.1 - ((attack_time + decay_time) * self.rel_inclination)
+        self.rel_inclination = (0 - 0.2) / release_time #Inclinação do RELEASE
+        self.rel_shift = 0.2 - ((attack_time + decay_time) * self.rel_inclination)
 
         # Criando os envelopes
         self.attack_envelope = (self.t * self.att_inclination) + self.att_shift
@@ -61,6 +63,7 @@ class Note(QObject):
 
         #Sinal pronto e modulado
         self.signal = self.attack_signal + self.decay_signal + self.release_signal
+
 
 
 

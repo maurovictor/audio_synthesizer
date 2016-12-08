@@ -27,7 +27,27 @@ class Window(QtGui.QMainWindow):
                                     440.0,
                                     493.88]
 
-        self.black_frequencies = [277.18, 311.13, 369.99, 415.3, 466.16]
+        self.black_frequencies = [277.18,
+                                  311.13,
+                                  369.99,
+                                  415.30,
+                                  466.16]
+
+        self.octave_factor = [0.5, 0.25, 1., 2., 4.]
+        self.octave = 1.
+
+        #Botões de alterações de oitavas
+        bntOctavesL = QtGui.QPushButton("<",self)
+        bntOctavesL.clicked.connect(self.diminuir)
+        bntOctavesL.setShortcut("<")
+        bntOctavesL.resize(50,50)
+        bntOctavesL.move(100+7*60-100, 50)
+
+        bntOctavesH = QtGui.QPushButton(">",self)
+        bntOctavesH.clicked.connect(self.aumentar)
+        bntOctavesH.setShortcut(">")
+        bntOctavesH.resize(50,50)
+        bntOctavesH.move(100+7*60-50, 50)
 
         self.white_shortcuts = ['a', 's', 'd', 'f', 'g', 'h', 'j']
         self.black_shortcuts = ['w', 'e', 't', 'y', 'u']
@@ -46,7 +66,7 @@ class Window(QtGui.QMainWindow):
             self.white_btns[-1].setStyleSheet("background-color: white")
             self.white_btns[-1].resize(self.key_width, self.key_heigh)
             self.white_btns[-1].move(100 + (self.key_width * i), 100)
-            self.white_btns[-1].clicked.connect(partial(on_press, float(self.natural_frequencies[i])))
+            self.white_btns[-1].clicked.connect(partial(on_press, freq=float(self.natural_frequencies[i])))
             #self.white_btns[-1].pressed.connect(partial(on_press, float(self.natural_frequencies[i])))
             #self.white_btns[-1].released.connect(on_release)
 
@@ -65,10 +85,13 @@ class Window(QtGui.QMainWindow):
 
         self.show()
 
+        self.rise_octave():
+
+
 
 @pyqtSlot(float)
 def on_press(freq):
-    note = Note(freq, 1, .001, .5, .7)
+    note = Note(freq, 1, .1, .5, .7, 1)
     note.play()
 
 
