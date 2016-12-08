@@ -5,7 +5,7 @@ Before run this application some packages are needed:
 * numpy
 * PyQt4
 
-The instalation is quite easy. _sounddevice_ and _numpy_ can be install through **pip**. PyQt4 must be installed on your machine. 
+The instalation is quite easy. _sounddevice_ and _numpy_ can be installed through **pip**. PyQt4 must be installed on your machine. 
 
 * Windows instalation:
 
