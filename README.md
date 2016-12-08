@@ -1,6 +1,6 @@
 # Usage
 
-In order to run this application some packages are needed: 
+Before run this application some packages are needed: 
 * sounddevice
 * numpy
 * PyQt4
@@ -8,7 +8,10 @@ In order to run this application some packages are needed:
 The instalation is quite easy. _sounddevice_ and _numpy_ can be install through **pip**. PyQt4 must be installed on your machine. 
 
 * Windows instalation:
-.. * Download the binary package for python2.7, and run it
+
+..* The link for donwnload: https://riverbankcomputing.com/software/pyqt/download
+..* Download the binary package for python2.7, 64 or 32 bits, it depends on your hardware
+..* Run the binary file in order to install
 * Linux(Debian like distribution):
 .. * PyQt4 is already on the standard repositories, so just execute on terminal: `sudo apt-get install pyqt4`
 
