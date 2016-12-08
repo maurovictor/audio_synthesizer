@@ -1,6 +1,6 @@
 # Usage
 
-In order to run this application some packages are neede: 
+In order to run this application some packages are needed: 
 * sounddevice
 * numpy
 * PyQt4
